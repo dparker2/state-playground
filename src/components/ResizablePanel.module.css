@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  position: relative;
+}
+
+.panel {
+  resize: none;
+}
+
+.panel:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.panel:last-child {
+  flex: 1;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.divider {
+  width: 16px;
+  transform: translateX(-8px);
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.divider:hover::before {
+  content: "";
+  border-radius: 4px;
+  width: 10px;
+  height: 120px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: var(--pico-spacing);
+  background-color: #ffffff1a;
+}
