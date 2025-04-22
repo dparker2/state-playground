@@ -1,4 +1,3 @@
-import "./App.css";
 import TableOfContents from "./components/TableOfContents.tsx";
 import UserTable from "./components/UserTable.tsx";
 import DebouncedCounter from "./components/DebouncedCounter.tsx";

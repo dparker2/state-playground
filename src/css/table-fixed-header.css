@@ -1,0 +1,12 @@
+table.fixed-header {
+  border-collapse: separate;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    left: 0.5px; /* yeah this is stupid */
+    z-index: 1;
+    box-shadow: 0 calc(-1 * var(--pico-border-width)) 0
+      var(--pico-table-border-color);
+  }
+}
