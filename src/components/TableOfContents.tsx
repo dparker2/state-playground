@@ -25,6 +25,9 @@ export default function () {
           <li>
             <a href="#resizable-panel">Resizable Panel</a>
           </li>
+          <li>
+            <a href="#ten-thousand-items">10,000 Items</a>
+          </li>
         </ul>
       </nav>
     </aside>

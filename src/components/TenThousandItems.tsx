@@ -4,31 +4,31 @@ import ViewModel from "../viewmodel.ts";
 type VirtualizedListState = {
   startIndex: number;
   itemHeight: number;
-  scrollHeight: number;
+  visibleHeight: number;
 };
 class VirtualizedListVM extends ViewModel<VirtualizedListState> {
   data: number[] = Array(10000)
     .fill(0)
     .map((_, i) => i + 1);
-  itemHeight: number = 0;
-  container: HTMLElement | null = null;
-  items: HTMLElement[] = [];
 
   onScroll(event: React.UIEvent) {
-    const { itemHeight } = this.getState();
+    const { itemHeight, startIndex } = this.getState();
     const scrollTop = event.currentTarget.scrollTop;
+    const newIndex = Math.floor(scrollTop / itemHeight);
 
-    this.setState({
-      startIndex: Math.floor(scrollTop / itemHeight),
-    });
+    if (newIndex !== startIndex) {
+      this.setState({
+        startIndex: newIndex,
+      });
+    }
   }
 
   scrollerStyle() {
-    const { scrollHeight } = this.getState();
+    const { visibleHeight } = this.getState();
 
     return {
       overflow: "auto",
-      height: scrollHeight,
+      height: visibleHeight,
     } as const;
   }
 
@@ -42,8 +42,8 @@ class VirtualizedListVM extends ViewModel<VirtualizedListState> {
   }
 
   visibleItems() {
-    const { startIndex, itemHeight, scrollHeight } = this.getState();
-    const endIndex = startIndex + Math.ceil(scrollHeight / itemHeight);
+    const { startIndex, itemHeight, visibleHeight } = this.getState();
+    const endIndex = startIndex + Math.ceil(visibleHeight / itemHeight);
 
     return this.data.slice(startIndex, endIndex);
   }
@@ -53,10 +53,10 @@ export default function () {
   const vm = VirtualizedListVM.useModel({
     startIndex: 0,
     itemHeight: 61.5,
-    scrollHeight: 400,
+    visibleHeight: 400,
   });
   return (
-    <article>
+    <article id="ten-thousand-items">
       <header>
         <h4>10,000 Items</h4>
       </header>

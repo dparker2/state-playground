@@ -12,6 +12,7 @@
     "npm:radix-ui@^1.1.3": "1.1.3_@types+react@19.0.12_@types+react-dom@19.0.4__@types+react@19.0.12_react@19.0.0_react-dom@19.0.0__react@19.0.0",
     "npm:react-dom@19": "19.0.0_react@19.0.0",
     "npm:react@19": "19.0.0",
+    "npm:reselect@^5.1.1": "5.1.1",
     "npm:vite@*": "6.2.2",
     "npm:vite@^6.1.1": "6.2.2"
   },
@@ -1199,6 +1200,9 @@
     "react@19.0.0": {
       "integrity": "sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ=="
     },
+    "reselect@5.1.1": {
+      "integrity": "sha512-K/BG6eIky/SBpzfHZv/dd+9JBFiS4SWV7FIujVyJRux6e45+73RaUHXLmIR1f7WOMaQ0U1km6qwklRQxpJJY0w=="
+    },
     "rollup@4.36.0": {
       "integrity": "sha512-zwATAXNQxUcd40zgtQG0ZafcRK4g004WtEl7kbuhTWPvf07PsfohXl39jVUvPF7jvNAIkKPQ2XrsDlWuxBd++Q==",
       "dependencies": [
@@ -1275,6 +1279,7 @@
       "npm:radix-ui@^1.1.3",
       "npm:react-dom@19",
       "npm:react@19",
+      "npm:reselect@^5.1.1",
       "npm:vite@^6.1.1"
     ]
   }

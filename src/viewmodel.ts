@@ -9,6 +9,7 @@ function updateState<T>(oldState: T, newState: Partial<T> | T) {
 
 export default class ViewModel<T> {
   protected isMounted: boolean = false;
+  private memoCache = new Map();
 
   constructor(
     private _stateRef: React.RefObject<T>,
@@ -30,6 +31,71 @@ export default class ViewModel<T> {
       console.debug("setState", prev, this._stateRef.current);
       return this._stateRef.current;
     });
+  }
+
+  memo<S, R>(
+    key: string,
+    selector: (state: T) => S,
+    func: (selected: S) => R
+  ): R {
+    const old = this.memoCache.get(key);
+    const selected = selector(this.getState());
+
+    if (old && this.shallowEqual(old.selected, selected)) {
+      return old.result;
+    }
+
+    const result = func(selected);
+    this.memoCache.set(key, { selected, result });
+    return result;
+  }
+
+  private shallowEqual(a: unknown, b: unknown): boolean {
+    if (Object.is(a, b)) return true;
+
+    if (typeof a !== typeof b || a == null || b == null) {
+      return false;
+    }
+
+    if (Array.isArray(a) && Array.isArray(b)) {
+      if (a.length !== b.length) return false;
+      for (let i = 0; i < a.length; i++) {
+        if (!Object.is(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    if (typeof a === "object" && typeof b === "object") {
+      const aKeys = Object.keys(a);
+      const bKeys = Object.keys(b);
+      if (aKeys.length !== bKeys.length) return false;
+
+      for (let i = 0; i < aKeys.length; i++) {
+        const key = aKeys[i];
+
+        if (!Object.prototype.hasOwnProperty.call(b, key)) {
+          return false;
+        }
+
+        // Access through Object.getOwnPropertyDescriptor to avoid 'as'
+        const aDesc = Object.getOwnPropertyDescriptor(a, key);
+        const bDesc = Object.getOwnPropertyDescriptor(b, key);
+
+        if (!aDesc || !bDesc || !("value" in aDesc) || !("value" in bDesc)) {
+          return false;
+        }
+
+        if (!Object.is(aDesc.value, bDesc.value)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   onInit() {}
