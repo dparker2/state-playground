@@ -1,0 +1,22 @@
+.form-container {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--pico-spacing);
+
+    & > form {
+        flex-basis: 300px;
+    }
+}
+
+.list-container {
+    overflow: auto;
+    height: 400px;
+
+    & article {
+        display: flex;
+
+        & span:first-child {
+            flex: 1;
+        }
+    }
+}

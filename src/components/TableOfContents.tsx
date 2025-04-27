@@ -7,9 +7,9 @@ export default function () {
 
     addEventListener("scroll", currentPage);
 
-    () => {
+    (() => {
       removeEventListener("scroll", currentPage);
-    };
+    });
   }, [nav.current]);
 
   return (
@@ -27,6 +27,9 @@ export default function () {
           </li>
           <li>
             <a href="#ten-thousand-items">10,000 Items</a>
+          </li>
+          <li>
+            <a href="#product-list">Product List</a>
           </li>
         </ul>
       </nav>

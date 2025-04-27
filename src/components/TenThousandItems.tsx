@@ -60,11 +60,10 @@ export default function () {
       <header>
         <h4>10,000 Items</h4>
       </header>
+      <p>Virtualized List</p>
       <div style={vm.scrollerStyle()} onScroll={(e) => vm.onScroll(e)}>
         <div style={vm.containerStyle()}>
-          {vm.visibleItems().map((val) => (
-            <article key={val}>{val}</article>
-          ))}
+          {vm.visibleItems().map((val) => <article key={val}>{val}</article>)}
         </div>
       </div>
     </article>
