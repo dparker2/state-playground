@@ -22,6 +22,30 @@ export default class ViewModel<T> {
     );
   }
 
+  protected memoize<Deps extends [unknown] | unknown[], R>(
+    depsSelector: (state: Readonly<T>) => Deps,
+    compute: (...args: Deps) => R
+  ): () => R {
+    let initialRun = true;
+    let lastDeps: unknown[] = [];
+    let cachedValue: R;
+
+    return () => {
+      const deps = depsSelector(this.getState());
+      const changed =
+        deps.length !== lastDeps.length ||
+        deps.some((dep, i) => dep !== lastDeps[i]);
+
+      if (changed || initialRun) {
+        cachedValue = compute(...deps);
+        lastDeps = deps;
+        initialRun = false;
+      }
+
+      return cachedValue;
+    };
+  }
+
   onInit() {}
   onMount() {}
   onUnmount() {}

@@ -16,49 +16,38 @@ type State = {
   hovered?: Product; // Just to have some state to frequently update
 };
 class ProductList extends ViewModel<State> {
-  visibleProducts: Product[] = [];
+  getVisibleProducts = this.memoize(
+    ({ products, sortBy, order }) => [products, sortBy, order],
+    (products, sortBy, order) => {
+      console.log("Sorting products");
 
-  private sortProducts() {
-    console.log("Sorting products");
-    const { products, sortBy, order } = this.getState();
+      return [...products].sort((p1, p2) => {
+        const a = p1[sortBy];
+        const b = p2[sortBy];
 
-    this.visibleProducts = [...products].sort((p1, p2) => {
-      const a = p1[sortBy];
-      const b = p2[sortBy];
-      if (order === "asc") {
-        if (typeof a === "string" && typeof b === "string") {
-          return a.localeCompare(b);
+        if (order === "asc") {
+          if (typeof a === "string" && typeof b === "string") {
+            return a.localeCompare(b);
+          }
+          if (typeof a === "number" && typeof b === "number") {
+            return a - b;
+          }
+          throw new Error("Sort error");
         }
-        if (typeof a === "number" && typeof b === "number") {
-          return a - b;
+
+        if (order === "desc") {
+          if (typeof a === "string" && typeof b === "string") {
+            return b.localeCompare(a);
+          }
+          if (typeof a === "number" && typeof b === "number") {
+            return b - a;
+          }
+          throw new Error("Sort error");
         }
         throw new Error("Sort error");
-      }
-      if (order === "desc") {
-        if (typeof a === "string" && typeof b === "string") {
-          return b.localeCompare(a);
-        }
-        if (typeof a === "number" && typeof b === "number") {
-          return b - a;
-        }
-        throw new Error("Sort error");
-      }
-      throw new Error("Sort error");
-    });
-  }
-
-  override onInit() {
-    this.sortProducts();
-  }
-
-  override onStateUpdated(_prev: State, _next: State) {
-    if (
-      _prev.order !== _next.order || _prev.sortBy !== _next.sortBy ||
-      _prev.products !== _next.products
-    ) {
-      this.sortProducts();
-    }
-  }
+      });
+    },
+  );
 
   sortBy(val: State["sortBy"]) {
     this.setState({ sortBy: val });
@@ -134,7 +123,7 @@ export default function () {
         <p>Hovered: {hovered?.title || "None"}</p>
       </div>
       <div className={styles["list-container"]}>
-        {vm.visibleProducts.map((p) => (
+        {vm.getVisibleProducts().map((p) => (
           <article
             key={p.id}
             onMouseEnter={() => vm.onMouseEnter(p.id)}
