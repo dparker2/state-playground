@@ -9,7 +9,7 @@ type CounterState = {
   value: number;
   debounced: number;
 };
-class Counter extends ViewModel<CounterState> {
+class Counter extends ViewModel<CounterState>() {
   private timeoutId?: number;
 
   override onUnmount(): void {
@@ -21,7 +21,7 @@ class Counter extends ViewModel<CounterState> {
       clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(
         () => this.setState(({ value }) => ({ debounced: value })),
-        2000
+        2000,
       );
     }
   }

@@ -2,14 +2,14 @@ import React from "react";
 import ViewModel from "../viewmodel.ts";
 import styles from "./ResizablePanel.module.css";
 
-class OffsetModel extends ViewModel<number> {
+class OffsetModel extends ViewModel<number>() {
   minOffset = 0.1;
   maxOffset = 0.9;
   private container: HTMLDivElement | null = null;
 
   setup(container: HTMLDivElement | null) {
     this.container = container;
-    () => (this.container = null);
+    (() => (this.container = null));
   }
 
   startResizing(startEvent: React.MouseEvent | React.TouchEvent) {
@@ -25,7 +25,7 @@ class OffsetModel extends ViewModel<number> {
       this.setState((curr) =>
         Math.max(
           this.minOffset,
-          Math.min(this.maxOffset, (curr += (toX - fromX) / width))
+          Math.min(this.maxOffset, curr += (toX - fromX) / width),
         )
       );
     };
@@ -70,13 +70,15 @@ export default function () {
           className={styles.panel}
           rows={10}
           style={{ flexBasis: offset }}
-        ></textarea>
+        >
+        </textarea>
         <div
           className={styles.divider}
           onMouseDown={(e) => offsetModel.startResizing(e)}
           onTouchStart={(e) => offsetModel.startResizing(e)}
           style={{ left: offset }}
-        ></div>
+        >
+        </div>
         <textarea className={styles.panel} rows={10}></textarea>
       </div>
     </article>

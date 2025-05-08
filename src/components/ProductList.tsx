@@ -15,7 +15,7 @@ type State = {
   order: "asc" | "desc";
   hovered?: Product; // Just to have some state to frequently update
 };
-class ProductList extends ViewModel<State> {
+class ProductList extends ViewModel<State>() {
   getVisibleProducts = this.memoize(
     ({ products, sortBy, order }) => [products, sortBy, order],
     (products, sortBy, order) => {

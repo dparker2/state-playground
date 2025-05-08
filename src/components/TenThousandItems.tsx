@@ -6,7 +6,7 @@ type VirtualizedListState = {
   itemHeight: number;
   visibleHeight: number;
 };
-class VirtualizedListVM extends ViewModel<VirtualizedListState> {
+class VirtualizedListVM extends ViewModel<VirtualizedListState>() {
   data: number[] = Array(10000)
     .fill(0)
     .map((_, i) => i + 1);

@@ -31,6 +31,9 @@ export default function () {
           <li>
             <a href="#product-list">Product List</a>
           </li>
+          <li>
+            <a href="#user-context">User Context</a>
+          </li>
         </ul>
       </nav>
     </aside>

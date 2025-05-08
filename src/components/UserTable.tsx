@@ -31,7 +31,7 @@ type UsersState = {
   activeUser: User | null;
 };
 
-class Users extends ViewModel<UsersState> {
+class Users extends ViewModel<UsersState>() {
   override onMount(): void {
     this.fetch();
   }
@@ -69,7 +69,10 @@ export default function () {
   const { users, activeUser, loading } = userModel.getState();
 
   const body = users.map((user) => (
-    <tr key={user.id} onClick={() => userModel.onSelectUser(user.id)}>
+    <tr
+      key={user.id}
+      onClick={() => userModel.onSelectUser(user.id)}
+    >
       <td>
         <input
           id={`user-${user.id}`}
@@ -79,7 +82,7 @@ export default function () {
           onChange={(evt) => {
             if (evt.currentTarget.checked) userModel.onSelectUser(user.id);
           }}
-        ></input>
+        />
       </td>
       <th scope="row">
         <label htmlFor={`user-${user.id}`}>
