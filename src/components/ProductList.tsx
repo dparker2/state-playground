@@ -11,41 +11,49 @@ type Product = {
 
 type State = {
   products: Product[];
+  query: string;
+  debouncedQuery: string;
   sortBy: "title" | "price" | "stock";
   order: "asc" | "desc";
-  hovered?: Product; // Just to have some state to frequently update
+  hovered?: Product; // Just to have some other state to frequently update
 };
 class ProductList extends ViewModel<State>() {
+  private debounceId?: number;
+
   getVisibleProducts = this.memoize(
-    ({ products, sortBy, order }) => [products, sortBy, order],
-    (products, sortBy, order) => {
-      console.log("Sorting products");
+    (
+      { products, sortBy, order, debouncedQuery },
+    ) => [products, sortBy, order, debouncedQuery],
+    (products, sortBy, order, debouncedQuery) => {
+      console.log("Calculating visible products");
 
-      return [...products].sort((p1, p2) => {
-        const a = p1[sortBy];
-        const b = p2[sortBy];
+      const lowerQuery = debouncedQuery.toLowerCase();
+      return products.filter((p) => p.title.toLowerCase().includes(lowerQuery))
+        .sort((p1, p2) => {
+          const a = p1[sortBy];
+          const b = p2[sortBy];
 
-        if (order === "asc") {
-          if (typeof a === "string" && typeof b === "string") {
-            return a.localeCompare(b);
+          if (order === "asc") {
+            if (typeof a === "string" && typeof b === "string") {
+              return a.localeCompare(b);
+            }
+            if (typeof a === "number" && typeof b === "number") {
+              return a - b;
+            }
+            throw new Error("Sort error");
           }
-          if (typeof a === "number" && typeof b === "number") {
-            return a - b;
+
+          if (order === "desc") {
+            if (typeof a === "string" && typeof b === "string") {
+              return b.localeCompare(a);
+            }
+            if (typeof a === "number" && typeof b === "number") {
+              return b - a;
+            }
+            throw new Error("Sort error");
           }
           throw new Error("Sort error");
-        }
-
-        if (order === "desc") {
-          if (typeof a === "string" && typeof b === "string") {
-            return b.localeCompare(a);
-          }
-          if (typeof a === "number" && typeof b === "number") {
-            return b - a;
-          }
-          throw new Error("Sort error");
-        }
-        throw new Error("Sort error");
-      });
+        });
     },
   );
 
@@ -55,6 +63,14 @@ class ProductList extends ViewModel<State>() {
 
   order(val: State["order"]) {
     this.setState({ order: val });
+  }
+
+  query(val: string) {
+    clearTimeout(this.debounceId);
+    this.setState({ query: val });
+    this.debounceId = setTimeout(() => {
+      this.setState(({ query }) => ({ debouncedQuery: query }));
+    }, 300);
   }
 
   onMouseEnter(id: number) {
@@ -67,13 +83,15 @@ class ProductList extends ViewModel<State>() {
 }
 const initialState: State = {
   products: data.products,
+  query: "",
+  debouncedQuery: "",
   sortBy: "title",
   order: "asc",
 };
 
 export default function () {
   const vm = ProductList.useModel(initialState);
-  const { sortBy, order, hovered } = vm.getState();
+  const { sortBy, order, hovered, query } = vm.getState();
   const stringSorting = sortBy === "title";
 
   return (
@@ -82,14 +100,22 @@ export default function () {
         <h4>Product List</h4>
       </header>
       <p>
-        Products are sorted only when the selected Sort values change, not when
-        the hovered item changes.
+        Memoization: Visible products are filtered/sorted only when the
+        debounced form values change.
       </p>
       <div className={styles["form-container"]}>
         <form>
-          <label>Sort</label>
+          <input
+            type="search"
+            name="search"
+            placeholder="Search"
+            aria-label="Search"
+            value={query}
+            onChange={(e) => vm.query(e.currentTarget.value)}
+          />
           <fieldset role="group">
             <select
+              id="sort-by"
               value={sortBy}
               onChange={({ target: { value } }) => {
                 if (
