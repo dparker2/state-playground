@@ -29,11 +29,13 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Build with Deno
-        run: deno task build
+      - id: repo-basename
+        run: |
+          echo "value=`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Build with Deno
-        run: deno task build
+        run: deno task build --base=${{ steps.repo-basename.outputs.value }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
