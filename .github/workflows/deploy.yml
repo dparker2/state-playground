@@ -24,6 +24,14 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Build with Deno
+        run: deno task build
+
       - name: Build with Deno
         run: deno task build
 
