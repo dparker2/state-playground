@@ -31,7 +31,7 @@ jobs:
 
       - id: repo-basename
         run: |
-          echo "value=`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
+          echo "value=/`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Build with Deno
